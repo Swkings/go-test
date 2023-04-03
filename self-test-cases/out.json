@@ -1,0 +1,20 @@
+{
+	"id": 1,
+	"content": "努力做一个技术达人",
+	"author": {
+		"id": 2,
+		"name": "商鞅"
+	},
+	"comments": [
+		{
+			"id": 3,
+			"content": "this is my hard day",
+			"author": "小不点"
+		},
+		{
+			"id": 4,
+			"content": "good good study",
+			"author": "day day up"
+		}
+	]
+}
