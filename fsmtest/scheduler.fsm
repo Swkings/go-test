@@ -1,0 +1,65 @@
+PackageDir: test
+Package: fsmtest
+State:
+    - Idle
+    - Assigned
+    - Processing
+    - Completed
+    - Abort
+    - Maintenance
+    - AssignedMaintenance
+    - ProcessingMaintenance
+    - CompletedMaintenance
+    - AbortMaintenance
+Event: 
+    - AddTask
+    - StartCmd
+    - DoneCmd
+    - AbortCmd
+    - Maintenance
+    - Operation
+    - Repair
+    - ClearTask
+FSMs:
+    - 
+      Name: Scheduler
+      Initial: Idle
+      Transition:
+        - Idle -> AddTask -> Assigned
+        - Assigned -> StartCmd -> Processing
+        - AssignedMaintenance -> StartCmd -> ProcessingMaintenance
+        - Processing -> DoneCmd -> Completed
+        - ProcessingMaintenance -> DoneCmd -> CompletedMaintenance
+        - Assigned -> AbortCmd -> Abort
+        - Processing -> AbortCmd -> Abort
+        - AssignedMaintenance -> AbortCmd -> AbortMaintenance
+        - ProcessingMaintenance -> AbortCmd -> AbortMaintenance
+        - Idle -> Operation -> Maintenance
+        - Assigned -> Operation -> AssignedMaintenance
+        - Processing -> Operation -> ProcessingMaintenance
+        - CompletedMaintenance -> Maintenance -> Maintenance
+        - AbortMaintenance -> Maintenance -> Maintenance
+        - Completed -> ClearTask -> Idle
+        - Abort -> ClearTask -> Idle
+        - Maintenance -> Repair -> Idle
+    - 
+      Name: Test
+      Initial: Idle
+      Transition:
+        - Idle -> AddTask -> Assigned
+        - Assigned -> StartCmd -> Processing
+        - AssignedMaintenance -> StartCmd -> ProcessingMaintenance
+        - Processing -> DoneCmd -> Completed
+        - ProcessingMaintenance -> DoneCmd -> CompletedMaintenance
+        - Assigned -> AbortCmd -> Abort
+        - Processing -> AbortCmd -> Abort
+        - AssignedMaintenance -> AbortCmd -> AbortMaintenance
+        - ProcessingMaintenance -> AbortCmd -> AbortMaintenance
+        - Idle -> Operation -> Maintenance
+        - Assigned -> Operation -> AssignedMaintenance
+        - Processing -> Operation -> ProcessingMaintenance
+        - CompletedMaintenance -> Maintenance -> Maintenance
+        - AbortMaintenance -> Maintenance -> Maintenance
+        - Completed -> ClearTask -> Idle
+        - Abort -> ClearTask -> Idle
+        - Maintenance -> Repair -> Idle

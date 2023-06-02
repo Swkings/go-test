@@ -3,7 +3,6 @@ package test
 import (
 	"fmt"
 	"testing"
-	"time"
 )
 
 type RealTimeInfo struct {
@@ -60,5 +59,6 @@ func TestCloseChan(t *testing.T) {
 		}
 	}
 	fmt.Printf("m: %v\n", PrettyMapStruct(m, true))
-	time.Sleep(30 * time.Second)
+	// 保持主进程不退出
+	select {}
 }

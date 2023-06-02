@@ -22,4 +22,13 @@ func TestString(t *testing.T) {
 		ha:   "b",
 	}
 	fmt.Printf("testString: %+v\n", s)
+
+	fmt.Printf("equal: %v\n", Stu{
+		name: "a",
+		age:  10,
+		ha:   "b"} == Stu{
+		age:  10,
+		name: "a",
+		ha:   "b"})
+
 }

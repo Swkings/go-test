@@ -1,0 +1,91 @@
+{
+    "replyCodeMsg": {
+        "errorMessage": "SUCCESS"
+    },
+    "updateVehicleSocReq": [
+        {
+            "mapID": "147",
+            "isRecover": true,
+            "vehicleSoc": [
+                {
+                    "vin": "bench_test.car2",
+                    "soc": 100,
+                    "atTime": 1683183750
+                },
+                {
+                    "vin": "bench_test.car1",
+                    "soc": 100,
+                    "atTime": 1683183750
+                }
+            ]
+        },
+        {
+            "mapID": "20230227",
+            "isRecover": true,
+            "vehicleSoc": [
+                {
+                    "vin": "e70_yx.patrol.testwxtcar9",
+                    "soc": 17.492,
+                    "atTime": 1683183750
+                },
+                {
+                    "vin": "e70_yx.patrol.testggcar666",
+                    "soc": 94.76440000000001,
+                    "atTime": 1683183750
+                },
+                {
+                    "vin": "tb25nh-r.uvv.testcar3",
+                    "soc": 100,
+                    "atTime": 1683183750
+                }
+            ]
+        },
+        {
+            "mapID": "20221219",
+            "isRecover": true,
+            "vehicleSoc": [
+                {
+                    "vin": "tb25nh-r.testwjcar9",
+                    "soc": 49.271300000000004,
+                    "atTime": 1683183750
+                }
+            ]
+        },
+        {
+            "mapID": "20200901",
+            "isRecover": true,
+            "vehicleSoc": [
+                {
+                    "vin": "tb25nr.wxt.car07",
+                    "soc": 100,
+                    "atTime": 1683183750
+                },
+                {
+                    "vin": "tb25nr.wxt.car04",
+                    "soc": 100,
+                    "atTime": 1683183750
+                },
+                {
+                    "vin": "tb25nr.wxt.car06",
+                    "soc": 100,
+                    "atTime": 1683183750
+                },
+                {
+                    "vin": "tb25nr.wxt.car05",
+                    "soc": 100,
+                    "atTime": 1683183750
+                },
+                {
+                    "vin": "tb25nr.wxt.car02",
+                    "soc": 100,
+                    "atTime": 1683183750
+                },
+                {
+                    "vin": "tb25nr.wxt.car03",
+                    "soc": 100,
+                    "atTime": 1683183750
+                }
+            ]
+        }
+    ]
+}
