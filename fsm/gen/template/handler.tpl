@@ -49,7 +49,7 @@ func _AfterHandler_{{.Transition.Event}}_{{.Transition.From}}(f *fsm.FSM[types.P
 
 {{range $fsmName := .FSMNameList}}
 func _BeforeHandlerFor{{$fsmName}}_{{$.Transition.Event}}_{{$.Transition.From}}(f *fsm.FSM[types.Payload]) error {
-// TODO: your code
+	// TODO: your code
 
 	return nil
 }
