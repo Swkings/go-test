@@ -8,14 +8,14 @@ import (
 	"text/template"
 )
 
-type HandlerData struct {
-	PackageDir  string
-	Package     string
-	Transition  Transition
-	FSMNameList []fsm.FSMName
+type CommonData struct {
+	PackageDir     string
+	Package        string
+	HandleItemList []*HandlerData
+	FSMFileName    string
 }
 
-func GenHandlers(outFile string, fsmFileName string, tplFileDir string, data FSMData, override bool) {
+func GenCommons(outFile string, fsmFileName string, tplFileDir string, data FSMData) {
 	err := CreateFSMDirLevel(outFile+"/"+data.Package, "/handlers")
 	if err != nil {
 		log.Fatal(err)
@@ -40,26 +40,30 @@ func GenHandlers(outFile string, fsmFileName string, tplFileDir string, data FSM
 		}
 	}
 
+	var commonData CommonData = CommonData{
+		PackageDir: data.PackageDir,
+		Package:    data.Package,
+		HandleItemList: Map2ListOpt(handleItemMap, func(_ fsm.EventStateKey, hd *HandlerData) *HandlerData {
+			return hd
+		}),
+		FSMFileName: fsmFileName,
+	}
+
 	handlersDir := fmt.Sprintf("%v/%v/handlers", outFile, data.Package)
 
-	handlerTpl, err := template.ParseFiles(tplFileDir + "/handler.tpl")
+	commonTpl, err := template.ParseFiles(tplFileDir + "/common.tpl")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	for key, handlerData := range handleItemMap {
-		handlerFilePathName := handlersDir + "/" + key.String() + ".go"
-		if isExist(handlerFilePathName) && !override {
-			continue
-		}
-		fmt.Printf("gen handlerFile: %v\n", handlerFilePathName)
-		payloadFile, _ := os.OpenFile(handlerFilePathName, os.O_CREATE|os.O_RDWR, 0666)
-		defer payloadFile.Close()
-		err = handlerTpl.Execute(payloadFile, handlerData)
-		if err != nil {
-			log.Fatal(err)
-		}
+	commonFilePathName := handlersDir + "/common.go"
+
+	fmt.Printf("gen commonFile: %v\n", commonFilePathName)
+	payloadFile, _ := os.OpenFile(commonFilePathName, os.O_CREATE|os.O_RDWR, 0666)
+	defer payloadFile.Close()
+	err = commonTpl.Execute(payloadFile, commonData)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	GenCommons(outFile, fsmFileName, tplFileDir, data)
 }

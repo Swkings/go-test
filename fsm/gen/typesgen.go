@@ -7,20 +7,20 @@ import (
 	"text/template"
 )
 
-func GenTypes(outFile string, fsmFileName string, tplFileDir string, data FSMData) {
+func GenTypes(outFile string, fsmFileName string, tplFileDir string, data FSMData, override bool) {
 	err := CreateFSMDirLevel(outFile+"/"+data.Package, "/types")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	genPayload(outFile, fsmFileName, tplFileDir, data)
-	genFsmMetaData(outFile, fsmFileName, tplFileDir, data)
+	genPayload(outFile, fsmFileName, tplFileDir, data, override)
+	genFsmMetaData(outFile, fsmFileName, tplFileDir, data, override)
 }
 
-func genPayload(outFile string, fsmFileName string, tplFileDir string, data FSMData) {
+func genPayload(outFile string, fsmFileName string, tplFileDir string, data FSMData, override bool) {
 	typesDir := fmt.Sprintf("%v/%v/types", outFile, data.Package)
 	payloadFilePathName := typesDir + "/payload.go"
-	if isExist(payloadFilePathName) {
+	if isExist(payloadFilePathName) && !override {
 		return
 	}
 	fmt.Printf("gen payloadFile: %v\n", payloadFilePathName)
@@ -40,7 +40,7 @@ func genPayload(outFile string, fsmFileName string, tplFileDir string, data FSMD
 	}
 }
 
-func genFsmMetaData(outFile string, fsmFileName string, tplFileDir string, data FSMData) {
+func genFsmMetaData(outFile string, fsmFileName string, tplFileDir string, data FSMData, override bool) {
 	typesDir := fmt.Sprintf("%v/%v/types", outFile, data.Package)
 	metaDataFilePathName := typesDir + "/fsmmetadata.go"
 	fmt.Printf("gen metaDataFile: %v\n", metaDataFilePathName)

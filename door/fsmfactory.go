@@ -8,6 +8,8 @@ import (
 	"test/door/handlers"
 	"test/door/types"
 )
+
+
 func NewFSMDoor() *fsm.FSM[types.Payload] {
 	f := fsm.NewFSM[types.Payload](types.FSMNameDoor, types.StateClose)
 

@@ -138,3 +138,16 @@ func CreateFSMDirLevel(path string, childLevels ...string) error {
 
 	return nil
 }
+
+// map[K]V to List[GetValue(K,V)]
+func Map2ListOpt[T comparable, V any, R any](m map[T]V, GetValue func(T, V) R, filter ...func(key T, item V) bool) []R {
+	res := []R{}
+	for key, item := range m {
+		if len(filter) > 0 && filter[0](key, item) {
+			continue
+		}
+		res = append(res, GetValue(key, item))
+	}
+
+	return res
+}

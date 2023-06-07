@@ -86,10 +86,11 @@ type (
 		// map[EventFromStateKey]ToState, FromState --Event-> ToState
 		transitions map[EventStateKey]FSMState
 		// map[EventFromStateKey]Handler, FromState --Handler(Event)-> ToState
-		handlers  map[EventStateKey]Handler[T]
-		Payload   *T
-		stateLock sync.RWMutex
-		eventLock sync.Mutex
+		handlers    map[EventStateKey]Handler[T]
+		eventSearch map[FSMState][]FSMEvent
+		Payload     *T
+		stateLock   sync.RWMutex
+		eventLock   sync.Mutex
 	}
 )
 
@@ -101,6 +102,7 @@ func NewFSM[T any](fsmName FSMName, initState FSMState, payloads ...*T) *FSM[T] 
 		processingEvent: EventEmpty,
 		transitions:     make(map[EventStateKey]FSMState),
 		handlers:        make(map[EventStateKey]Handler[T]),
+		eventSearch:     make(map[FSMState][]FSMEvent),
 		Payload: func() *T {
 			if len(payloads) > 0 {
 				return payloads[0]
@@ -123,23 +125,25 @@ func (fsm *FSM[T]) SetTransitions(transitionItems ...TransitionItem[T]) *FSM[T] 
 		}
 		fsm.transitions[eventStateKey] = transitionItem.ToState
 		fsm.handlers[eventStateKey] = transitionItem.Handler
+		fsm.setEventSearch(eventStateKey)
 	}
 
 	return fsm
 }
 
-func (fsm *FSM[T]) SetPayload(transitionItems ...TransitionItem[T]) *FSM[T] {
-	for _, transitionItem := range transitionItems {
-		eventStateKey := EventStateKey{
-			Event:     transitionItem.Event,
-			FromState: transitionItem.FromState,
-		}
-		if fsm.ExistEventStateKey(eventStateKey) {
-			panic(ErrorEventStateKeyRepeated(eventStateKey))
-		}
-		fsm.transitions[eventStateKey] = transitionItem.ToState
-		fsm.handlers[eventStateKey] = transitionItem.Handler
+func (fsm *FSM[T]) setEventSearch(eventStateKey EventStateKey) {
+	if _, ok := fsm.eventSearch[eventStateKey.FromState]; !ok {
+		fsm.eventSearch[eventStateKey.FromState] = []FSMEvent{}
 	}
+	fsm.eventSearch[eventStateKey.FromState] = append(fsm.eventSearch[eventStateKey.FromState], eventStateKey.Event)
+}
+
+func (fsm *FSM[T]) GetEventUnderState(state FSMState) []FSMEvent {
+	return fsm.eventSearch[state]
+}
+
+func (fsm *FSM[T]) SetPayload(payload *T) *FSM[T] {
+	fsm.Payload = payload
 
 	return fsm
 }

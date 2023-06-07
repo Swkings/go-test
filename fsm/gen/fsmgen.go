@@ -7,7 +7,7 @@ import (
 	"text/template"
 )
 
-func GenFSM(outFile string, fsmFileName string, tplFileDir string, data FSMData) {
+func GenFSM(outFile string, fsmFileName string, tplFileDir string, data FSMData, override bool) {
 	err := CreateFSMDirLevel(outFile, "/"+data.Package)
 	if err != nil {
 		log.Fatal(err)

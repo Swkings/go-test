@@ -15,6 +15,7 @@ var (
 	packageFatherDir = flag.String("out", "", "the package father dir")
 	templateDir      = flag.String("tpl", "", "the template file dir")
 	fsmDescribeFile  = flag.String("fsm", "", "the fsm describe file")
+	override         = flag.Bool("c", false, "override all file")
 )
 
 func main() {
@@ -51,8 +52,8 @@ func main() {
 		return fsmDescribeFileItems[len(fsmDescribeFileItems)-1]
 	}()
 
-	gen.GenFSM(*packageFatherDir, fsmFileName, *templateDir, data)
-	gen.GenTypes(*packageFatherDir, fsmFileName, *templateDir, data)
-	gen.GenHandlers(*packageFatherDir, fsmFileName, *templateDir, data)
+	gen.GenFSM(*packageFatherDir, fsmFileName, *templateDir, data, *override)
+	gen.GenTypes(*packageFatherDir, fsmFileName, *templateDir, data, *override)
+	gen.GenHandlers(*packageFatherDir, fsmFileName, *templateDir, data, *override)
 
 }

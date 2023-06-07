@@ -12,7 +12,7 @@ import (
 )
 
 func TestSchedulerFSMConcurrency(t *testing.T) {
-	f := fsm.NewFSM(types.FSMNameScheduler, types.StateIdle, &types.Payload{
+	f := fsm.NewFSM[types.Payload](types.FSMNameScheduler, types.StateIdle).SetPayload(&types.Payload{
 		Data: "scheduler",
 	})
 

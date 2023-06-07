@@ -9,7 +9,7 @@ import (
 	"{{.FSMData.PackageDir}}/{{.FSMData.Package}}/types"
 )
 
-{{- range $fsm := .FSMData.FSMs}}
+{{range $fsm := .FSMData.FSMs}}
 func NewFSM{{$fsm.Name}}() *fsm.FSM[types.Payload] {
 	f := fsm.NewFSM[types.Payload](types.FSMName{{$fsm.Name}}, types.{{$fsm.Initial}})
 
