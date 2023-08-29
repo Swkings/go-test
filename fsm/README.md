@@ -1,6 +1,6 @@
 # 使用模板生成目录结构
 ```bash
-go run gen/main.go -fsm ./gen/door.fsm -tpl ./gen
+go run gen/main.go -fsm ./gen/door.fsm -tpl ./gen/template
 ```
 
 - fsm: 指定 .fsm 描述文件

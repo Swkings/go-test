@@ -63,3 +63,36 @@ FSMs:
         - Completed -> ClearTask -> Idle
         - Abort -> ClearTask -> Idle
         - Maintenance -> Repair -> Idle
+    - 
+      Name: Vehicle
+      Initial: Initial
+      Describe: 接收系统的事件，控制 Vehicle 的变动，发送消息到 Algorithm 模块，通知 Algorithm 计算
+      Transition:
+        - Initial -> ScheduleOn -> Idle
+        - Initial -> ScheduleOff -> Initial
+        - Idle -> ScheduleOff -> Initial
+        - Idle -> ScheduleOn -> Idle
+    - 
+      Name: System
+      Initial: Running
+      Describe: 系统可并发接收事件，并分发到具体的子系统(VehicleSystem)，子系统内是串行消费事件的，不同子系统之间是并发的
+      Transition:
+        - Running -> Event -> Running
+    - 
+      Name: Order
+      Initial: Queueing
+      Describe: 接收系统的事件，控制 Order 的变动，发送消息到 Algorithm 模块，通知 Algorithm 计算
+      Transition:
+        - Queueing -> Dispatch -> Dispatched
+        - Queueing -> Cancel -> Canceled
+        - Dispatched -> Abort -> Aborted
+        - Dispatched -> Exec -> Executing
+        - Executing -> Abort -> Aborted
+        - Executing -> Finish -> Finished
+        - Canceled -> Delete -> Removed(End)
+        - Aborted -> Delete -> Removed(End)
+        - Finished -> Delete -> Removed(End)
+    -
+      Name: T
+      Initial: T
+      Describe: 只有同源 FSM 可以放在一个描述文件中，即相同 payload，否则需要分文件描述

@@ -27,7 +27,7 @@ var GlobalHandler = Handler[Payload]{
 		// fmt.Printf("transfer event %v->%v\n", f.currentState, f.processingEvent)
 		for t := 1; t <= 2; t++ {
 			time.Sleep(1 * time.Second)
-			fmt.Printf("transfer event %v->%v, sleep %vth s\n", f.currentState, f.processingEvent, t)
+			// fmt.Printf("transfer event %v->%v, sleep %vth s\n", f.currentState, f.processingEvent, t)
 		}
 
 		return nil
@@ -219,54 +219,64 @@ func TestSchedulerFSMConcurrency(t *testing.T) {
 		TransitionItem[Payload]{EventRepair, StateMaintenance, StateIdle, GlobalHandler},
 	)
 
-	var err error
+	var (
+		err   error
+		trace TransitionTrace
+	)
 	threading.GoSafe(func() {
-		_, err = fsm.ProcessEvent(EventAddTask)
+		trace, err = fsm.ProcessEvent(EventAddTask)
 		if err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
+		fmt.Printf("trace: %v\n", trace)
 	})
 
 	threading.GoSafe(func() {
-		_, err = fsm.ProcessEvent(EventDoneCmd)
+		trace, err := fsm.ProcessEvent(EventDoneCmd)
 		if err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
+		fmt.Printf("trace: %v\n", trace)
 	})
 
 	threading.GoSafe(func() {
-		_, err = fsm.ProcessEvent(EventStartCmd)
+		trace, err = fsm.ProcessEvent(EventStartCmd)
 		if err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
+		fmt.Printf("trace: %v\n", trace)
 	})
 
 	threading.GoSafe(func() {
-		_, err = fsm.ProcessEvent(EventOperation)
+		trace, err = fsm.ProcessEvent(EventOperation)
 		if err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
+		fmt.Printf("trace: %v\n", trace)
 	})
 
 	threading.GoSafe(func() {
-		_, err = fsm.ProcessEvent(EventDoneCmd)
+		trace, err := fsm.ProcessEvent(EventDoneCmd)
 		if err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
+		fmt.Printf("trace: %v\n", trace)
 	})
 
 	threading.GoSafe(func() {
-		_, err = fsm.ProcessEvent(EventMaintenance)
+		trace, err = fsm.ProcessEvent(EventMaintenance)
 		if err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
+		fmt.Printf("trace: %v\n", trace)
 	})
 
 	threading.GoSafe(func() {
-		_, err = fsm.ProcessEvent(EventRepair)
+		trace, err = fsm.ProcessEvent(EventRepair)
 		if err != nil {
 			fmt.Printf("err: %v\n", err)
 		}
+		fmt.Printf("trace: %v\n", trace)
 	})
 
 	<-time.After(20 * time.Second)

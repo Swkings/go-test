@@ -1,9 +1,10 @@
 package handlers
 
 import (
-	"test/door/types"
 	"test/fsm"
+	"test/door/types"
 )
+
 
 // FSM: Door
 func _BeforeHandlerForDoor_EventLock_StateOpen(f *fsm.FSM[types.Payload]) error {
@@ -24,6 +25,7 @@ func _AfterHandlerForDoor_EventLock_StateOpen(f *fsm.FSM[types.Payload]) error {
 	return nil
 }
 
+
 // FSM: SmartDoor
 func _BeforeHandlerForSmartDoor_EventLock_StateOpen(f *fsm.FSM[types.Payload]) error {
 	// TODO: your code
@@ -42,3 +44,4 @@ func _AfterHandlerForSmartDoor_EventLock_StateOpen(f *fsm.FSM[types.Payload]) er
 
 	return nil
 }
+

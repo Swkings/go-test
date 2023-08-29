@@ -1,0 +1,15 @@
+{
+    "name": "test",
+    "age": 10,
+    "addr": "四川成都",
+    "cls_info": [
+        {
+            "name": "篮球班",
+            "teacher": "张老师"
+        },
+        {
+            "name": "美术班",
+            "teacher": "李老师"
+        }
+    ]
+}

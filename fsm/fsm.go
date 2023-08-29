@@ -30,6 +30,8 @@ var (
 	ErrorEventStateKeyRepeated = func(eventStateKey EventStateKey) error {
 		return fmt.Errorf("event state key %v is repeated", eventStateKey.String())
 	}
+	ErrorSubFSMInvalid      = fmt.Errorf("sub fsm invalid")
+	ErrorSubFSMSameAsFather = fmt.Errorf("sub fsm can not same as father fsm")
 )
 
 type TransitionItem[T any] struct {
@@ -80,6 +82,7 @@ type (
 
 	FSM[T any] struct {
 		Name            FSMName
+		Describe        string
 		fromState       FSMState
 		processingEvent FSMEvent
 		currentState    FSMState

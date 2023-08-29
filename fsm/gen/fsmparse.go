@@ -22,6 +22,7 @@ var StateMap = map[string]string{}
 
 type FSMMetaInfo struct {
 	Name       string
+	Describe   string `yaml:"Describe,omitempty"`
 	Initial    string
 	Transition []string
 }
@@ -41,6 +42,7 @@ type Transition struct {
 }
 type FSM struct {
 	Name        string
+	Describe    string
 	Initial     string
 	Transitions []Transition
 }
@@ -66,6 +68,7 @@ func ParseFSMData(fsmYaml FSMYaml) FSMData {
 		}
 		fsms = append(fsms, FSM{
 			Name:        fsmsMetaInfo.Name,
+			Describe:    fsmsMetaInfo.Describe,
 			Initial:     statePrefix + fsmsMetaInfo.Initial,
 			Transitions: transitions,
 		})
