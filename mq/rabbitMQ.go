@@ -1,96 +1,98 @@
-// package main
+//go:build ignore
 
-// import (
-// 	"context"
-// 	"sync"
+package main
 
-// 	"gitlab.uisee.ai/gkl10385/scheduler-general-mq-protocol/mqaction"
-// 	"gitlab.uisee.ai/gkl10385/scheduler-general-mq-protocol/mqcommon"
-// 	"gitlab.uisee.ai/gkl10385/scheduler-general-mq-protocol/mqprotocol"
+import (
+	"context"
+	"sync"
 
-// 	"gitlab.uisee.ai/gkl10385/utc-utils/amq"
-// 	"gitlab.uisee.ai/gkl10385/utc-utils/amqp"
-// 	"gitlab.uisee.ai/gkl10385/utc-utils/logger"
-// )
+	"gitlab.uisee.ai/gkl10385/scheduler-general-mq-protocol/mqaction"
+	"gitlab.uisee.ai/gkl10385/scheduler-general-mq-protocol/mqcommon"
+	"gitlab.uisee.ai/gkl10385/scheduler-general-mq-protocol/mqprotocol"
 
-// var (
-// 	conn                  *amqp.Connection
-// 	ctx                   context.Context
-// 	cancel                context.CancelFunc
-// 	log                   *logger.Logger
-// 	orderID, batchOrderID int64
-// 	delay                 int32
-// 	wg                    sync.WaitGroup
-// )
+	"gitlab.uisee.ai/gkl10385/utc-utils/amq"
+	"gitlab.uisee.ai/gkl10385/utc-utils/amqp"
+	"gitlab.uisee.ai/gkl10385/utc-utils/logger"
+)
 
-// func init() {
-// 	logger.SetDebug(false)
-// 	logger.SetLevel(logger.TraceLevel)
+var (
+	conn                  *amqp.Connection
+	ctx                   context.Context
+	cancel                context.CancelFunc
+	log                   *logger.Logger
+	orderID, batchOrderID int64
+	delay                 int32
+	wg                    sync.WaitGroup
+)
 
-// 	ctx, cancel = context.WithCancel(context.Background())
-// 	log = logger.NewLogger("test")
-// 	if c, err := amqp.NewConnection(ctx, "amqp://admin:admin@localhost:5672/", log); err != nil {
-// 		log.Panicf("amqp connection initialize failed, %s", err.Error())
-// 	} else {
-// 		conn = c
-// 	}
+func init() {
+	logger.SetDebug(false)
+	logger.SetLevel(logger.TraceLevel)
 
-// 	orderID = 1
-// 	batchOrderID = 2
-// 	delay = 100
+	ctx, cancel = context.WithCancel(context.Background())
+	log = logger.NewLogger("test")
+	if c, err := amqp.NewConnection(ctx, "amqp://admin:admin@localhost:5672/", log); err != nil {
+		log.Panicf("amqp connection initialize failed, %s", err.Error())
+	} else {
+		conn = c
+	}
 
-// 	initDelayConsumer()
+	orderID = 1
+	batchOrderID = 2
+	delay = 100
 
-// 	initBroadcastConsumer()
-// }
+	initDelayConsumer()
 
-// func initBroadcastConsumer() {
-// 	broadcastConsumer, err := amq.NewBroadcastConsumer(string(mqcommon.Modules.Biz), conn, log, 1)
-// 	if err != nil {
-// 		log.Panicf("broadcast consumer initialize failed, %s", err.Error())
-// 	}
+	initBroadcastConsumer()
+}
 
-// 	broadcastConsumer.Listen(func(b []byte) {
-// 		payload := mqprotocol.Actions.Unmarshal(b)
+func initBroadcastConsumer() {
+	broadcastConsumer, err := amq.NewBroadcastConsumer(string(mqcommon.Modules.Biz), conn, log, 1)
+	if err != nil {
+		log.Panicf("broadcast consumer initialize failed, %s", err.Error())
+	}
 
-// 		if !mqprotocol.Actions.Biz.Is(payload.Module) {
-// 			return
-// 		}
+	broadcastConsumer.Listen(func(b []byte) {
+		payload := mqprotocol.Actions.Unmarshal(b)
 
-// 		switch {
-// 		case mqprotocol.Actions.Biz.AddCronJob.Is(payload.Action):
-// 			payload, _ := mqprotocol.Actions.Biz.AddCronJob.Unmarshal(b) //nolint: errcheck
-// 			act, _ := payload.(*mqaction.PayloadCronAddJob)              //nolint: errcheck
-// 			if act.IsValid() {
-// 				log.Infof("broadcast consumer recv, %+v", act)
-// 				wg.Done()
-// 			}
-// 		}
-// 	})
-// }
+		if !mqprotocol.Actions.Biz.Is(payload.Module) {
+			return
+		}
 
-// func initDelayConsumer() {
-// 	delayConsumer, err := amq.NewDelayConsumer(string(mqcommon.Modules.Order), conn, log, 1)
-// 	if err != nil {
-// 		log.Panicf("delay consumer initialize failed, %s", err.Error())
-// 	}
+		switch {
+		case mqprotocol.Actions.Biz.AddCronJob.Is(payload.Action):
+			payload, _ := mqprotocol.Actions.Biz.AddCronJob.Unmarshal(b) //nolint: errcheck
+			act, _ := payload.(*mqaction.PayloadCronAddJob)              //nolint: errcheck
+			if act.IsValid() {
+				log.Infof("broadcast consumer recv, %+v", act)
+				wg.Done()
+			}
+		}
+	})
+}
 
-// 	delayConsumer.Listen(func(b []byte) {
-// 		payload := mqprotocol.Actions.Unmarshal(b)
+func initDelayConsumer() {
+	delayConsumer, err := amq.NewDelayConsumer(string(mqcommon.Modules.Order), conn, log, 1)
+	if err != nil {
+		log.Panicf("delay consumer initialize failed, %s", err.Error())
+	}
 
-// 		if !mqprotocol.Actions.Order.Is(payload.Module) {
-// 			return
-// 		}
+	delayConsumer.Listen(func(b []byte) {
+		payload := mqprotocol.Actions.Unmarshal(b)
 
-// 		switch {
-// 		case mqprotocol.Actions.Order.AppointBatchOrder.Is(payload.Action):
-// 			payload, _ := mqprotocol.Actions.Order.AppointBatchOrder.Unmarshal(b) //nolint: errcheck
-// 			act, _ := payload.(*mqaction.PayloadAppointBatchOrder)                //nolint: errcheck
-// 			if act.IsValid() {
-// 				log.Infof("delay consumer recv, %+v", act)
+		if !mqprotocol.Actions.Order.Is(payload.Module) {
+			return
+		}
 
-// 				cancel()
-// 			}
-// 		}
-// 	})
-// }
+		switch {
+		case mqprotocol.Actions.Order.AppointBatchOrder.Is(payload.Action):
+			payload, _ := mqprotocol.Actions.Order.AppointBatchOrder.Unmarshal(b) //nolint: errcheck
+			act, _ := payload.(*mqaction.PayloadAppointBatchOrder)                //nolint: errcheck
+			if act.IsValid() {
+				log.Infof("delay consumer recv, %+v", act)
+
+				cancel()
+			}
+		}
+	})
+}

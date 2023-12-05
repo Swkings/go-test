@@ -11,7 +11,7 @@ type Stu struct {
 	ha   string
 }
 
-func (s *Stu) String() string {
+func (s Stu) String() string {
 	return s.name + s.ha
 }
 
@@ -22,13 +22,19 @@ func TestString(t *testing.T) {
 		ha:   "b",
 	}
 	fmt.Printf("testString: %+v\n", s)
-
-	fmt.Printf("equal: %v\n", Stu{
+	a := Stu{
 		name: "a",
 		age:  10,
-		ha:   "b"} == Stu{
-		age:  10,
+		ha:   "b",
+	}
+	b := Stu{
+		age:  11,
 		name: "a",
-		ha:   "b"})
-
+		ha:   "b",
+	}
+	fmt.Printf("equal: %v\n", a == b)
+	aMap := map[Stu]string{}
+	aMap[a] = "a"
+	aMap[b] = "b"
+	fmt.Printf("aMap: %v, mapLen: %v\n", aMap, len(aMap))
 }

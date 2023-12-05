@@ -8,15 +8,19 @@ import (
 )
 
 func F1(ctx context.Context, ch chan int) {
+	fmt.Printf("Run F1\n")
 	for {
 		<-ctx.Done()
-		fmt.Printf("F1 Done\n")
+		fmt.Printf("F1 Recv Ctx Done\n")
+		fmt.Printf("F1 Send Ctx 1\n")
 		ch <- 1
+		fmt.Printf("F1 Break\n")
 		break
 	}
 }
 
 func F2(ctx context.Context) {
+	fmt.Printf("Run F2\n")
 	for {
 		<-ctx.Done()
 		fmt.Printf("F2 Done\n")
@@ -30,7 +34,9 @@ func TestContext(t *testing.T) {
 
 	go F1(ctx, ch)
 	cancel()
-	<-ch
+	fmt.Printf("Cancel Ctx\n")
+	recvNum := <-ch
+	fmt.Printf("Recv Num: %v\n", recvNum)
 	time.Sleep(2 * time.Second)
 	F2(ctx)
 	time.Sleep(5 * time.Second)
