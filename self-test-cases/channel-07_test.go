@@ -47,6 +47,10 @@ func TestChannel07(t *testing.T) {
 			// 	ev := <-ch.ChanGroup.C
 			// 	fmt.Printf("event: %v, s: %+v\n", ev, ch.Name)
 			// }()
+			// threading.GoSafe(func() {
+			// 	ev := <-ch.ChanGroup.C
+			// 	fmt.Printf("event: %v, s: %+v\n", ev, ch.Name)
+			// })
 		}
 		time.Sleep(1 * time.Millisecond)
 	}
