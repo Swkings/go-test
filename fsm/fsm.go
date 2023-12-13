@@ -3,7 +3,6 @@ package fsm
 import (
 	"fmt"
 	"sync"
-	"time"
 )
 
 type (
@@ -39,16 +38,6 @@ type TransitionItem[T any] struct {
 	FromState FSMState
 	ToState   FSMState
 	Handler   Handler[T]
-}
-
-type TransitionTrace struct {
-	FromState        FSMState
-	Event            FSMEvent
-	ToState          FSMState
-	TransitionResult bool
-	FinalState       FSMState
-	BeginTime        int64 // nanosecond timestamp
-	EndTime          int64 // nanosecond timestamp
 }
 
 func NewTransitionItem[T any](event FSMEvent, fromState FSMState, toState FSMState, handler Handler[T]) TransitionItem[T] {
@@ -178,14 +167,9 @@ func (fsm *FSM[T]) ProcessEvent(event FSMEvent) (TransitionTrace, error) {
 	fsm.stateLock.RLock()
 	defer fsm.stateLock.RUnlock()
 
-	fsm.processingEvent = EventEmpty
+	fsm.processingEvent = event
 
-	transTrace := TransitionTrace{
-		FromState:        fsm.currentState,
-		Event:            event,
-		BeginTime:        time.Now().UnixNano(),
-		TransitionResult: false,
-	}
+	transTrace := NewTransitionTrace(fsm.currentState, event).Start()
 
 	eventStateKey := EventStateKey{
 		Event:     event,
@@ -193,48 +177,39 @@ func (fsm *FSM[T]) ProcessEvent(event FSMEvent) (TransitionTrace, error) {
 	}
 
 	if !fsm.ExistEventStateKey(eventStateKey) {
-		transTrace.FinalState = fsm.currentState
-		transTrace.EndTime = time.Now().UnixNano()
-		return transTrace, ErrorEventStateKeyInvalid(eventStateKey)
+		transTrace.SetFinalState(fsm.currentState).End()
+		return transTrace.TrimPtr(), ErrorEventStateKeyInvalid(eventStateKey)
 	}
 
 	toState, handler := fsm.transitions[eventStateKey], fsm.handlers[eventStateKey]
-	transTrace.ToState = toState
+	transTrace.SetToState(toState)
 
 	if handler.BeforeHandler != nil {
 		err := handler.BeforeHandler(fsm)
 		if err != nil {
-			transTrace.FinalState = fsm.currentState
-			transTrace.EndTime = time.Now().UnixNano()
-			return transTrace, err
+			transTrace.SetFinalState(fsm.currentState).End()
+			return transTrace.TrimPtr(), err
 		}
 	}
 
 	if handler.Handler != nil {
 		err := handler.Handler(fsm)
 		if err != nil {
-			transTrace.FinalState = fsm.currentState
-			transTrace.EndTime = time.Now().UnixNano()
-			return transTrace, err
+			transTrace.SetFinalState(fsm.currentState).End()
+			return transTrace.TrimPtr(), err
 		}
 	}
 
 	if handler.AfterHandler != nil {
-		err := handler.AfterHandler(fsm)
-		if err != nil {
-			transTrace.EndTime = time.Now().UnixNano()
-			return transTrace, err
-		}
+		handler.AfterHandler(fsm)
 	}
 
-	transTrace.FinalState = toState
-	transTrace.TransitionResult = true
-	transTrace.EndTime = time.Now().UnixNano()
+	transTrace.SetFinalState(toState).TransitionSuccess().End()
 
 	fsm.fromState = fsm.currentState
 	fsm.processingEvent = EventEmpty
 
 	fsm.currentState = toState
 
-	return transTrace, nil
+	return transTrace.TrimPtr(), nil
 }
