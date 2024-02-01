@@ -1,0 +1,164 @@
+uniqueKey: "console-vehicle-/order/internal/huadian/sub"
+path: "/order/internal/huadian/sub"
+method: "GET"
+cases:
+    - response:
+          simple:
+              header:
+                  x-unit-id: "3"
+                  x-unit-region: "sh"
+              trailer:
+                  x-api-version: "1.3.2"
+              body: |
+                  {
+                    "code": 0,
+                    "title": "sub-order",
+                    "message": "success",
+                    "page": 1,
+                    "size": 99,
+                    "total": 3,
+                    "list": [
+                      {
+                        "orderId": "o1",
+                        "mapId": "179",
+                        "capacity": 1,
+                        "vin": "v1",
+                        "estimatedStartTime": 6,
+                        "estimatedCompleteTime": 10,
+                        "status": 1
+                      },
+                      {
+                        "orderId": "o2",
+                        "mapId": "179",
+                        "capacity": 1,
+                        "vin": "v2",
+                        "estimatedStartTime": 6,
+                        "estimatedCompleteTime": 10,
+                        "status": 2
+                      },
+                      {
+                        "orderId": "o3",
+                        "mapId": "179",
+                        "capacity": 1,
+                        "vin": "v3",
+                        "estimatedStartTime": 6,
+                        "estimatedCompleteTime": 10,
+                        "status": 6
+                      }
+                    ]
+                  }
+
+---
+uniqueKey: "console-vehicle/order/huadian/internal/sub/no-timeout/:list4multidispatch"
+path: "/order/huadian/internal/sub/no-timeout/:list4multidispatch"
+method: "POST"
+cases:
+    - response:
+          simple:
+              header:
+                  x-unit-id: "3"
+                  x-unit-region: "sh"
+              trailer:
+                  x-api-version: "1.3.2"
+              body: |
+                  {
+                    "code": 0,
+                    "title": "sub-order",
+                    "message": "success",
+                    "page": 1,
+                    "size": 99,
+                    "total": 3,
+                    "list": [
+                      {
+                        "orderId": "o1",
+                        "mapId": "179",
+                        "capacity": 1,
+                        "vin": "v1",
+                        "estimatedStartTime": 6,
+                        "estimatedCompleteTime": 10,
+                        "status": 1
+                      },
+                      {
+                        "orderId": "o2",
+                        "mapId": "179",
+                        "capacity": 1,
+                        "vin": "v2",
+                        "estimatedStartTime": 6,
+                        "estimatedCompleteTime": 10,
+                        "status": 2
+                      },
+                      {
+                        "orderId": "o3",
+                        "mapId": "179",
+                        "capacity": 1,
+                        "vin": "v3",
+                        "estimatedStartTime": 6,
+                        "estimatedCompleteTime": 10,
+                        "status": 6
+                      }
+                    ]
+                  }
+
+---
+uniqueKey: "console-vehicle/order/huadian/internal/sub/:list4multidispatch"
+path: "/order/huadian/internal/sub/:list4multidispatch"
+method: "POST"
+cases:
+    - condition:
+        simple:
+          items:
+            - operandX: "2"
+              operator: ">"
+              operandY: "1"
+      response:
+        script:
+          lang: "javascript"
+          content: |
+            (function(){
+                return {
+                  header: {
+                    "x-unit-id": "3",
+                    "x-unit-region": "sh",
+                  },
+                  trailer: {
+                    "x-api-version": "1.3.2",
+                  },
+                  body: {
+                    "code": 0,
+                    "title": "sub-order",
+                    "message": "success",
+                    "page": 1,
+                    "size": 99,
+                    "total": 3,
+                    "list": [
+                      {
+                        "orderId": "o1",
+                        "mapId": "179",
+                        "capacity": 1,
+                        "vin": "v1",
+                        "estimatedStartTime": 6,
+                        "estimatedCompleteTime": 10,
+                        "status": 1
+                      },
+                      {
+                        "orderId": "o2",
+                        "mapId": "179",
+                        "capacity": 1,
+                        "vin": "v2",
+                        "estimatedStartTime": 6,
+                        "estimatedCompleteTime": 10,
+                        "status": 2
+                      },
+                      {
+                        "orderId": "o3",
+                        "mapId": "179",
+                        "capacity": 1,
+                        "vin": "v3",
+                        "estimatedStartTime": 6,
+                        "estimatedCompleteTime": 10,
+                        "status": 6
+                      },
+                    ],
+                  },
+                }
+              })()

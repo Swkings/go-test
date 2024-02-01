@@ -51,7 +51,7 @@ func GenCommons(outFile string, fsmFileName string, tplFileDir string, data FSMD
 
 	handlersDir := fmt.Sprintf("%v/%v/handlers", outFile, data.Package)
 
-	commonTpl, err := template.ParseFiles(tplFileDir + "/common.tpl")
+	commonTpl, err := template.ParseFiles(tplFileDir + "/single_handler_common.tpl")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -42,7 +42,7 @@ func GenHandlers(outFile string, fsmFileName string, tplFileDir string, data FSM
 
 	handlersDir := fmt.Sprintf("%v/%v/handlers", outFile, data.Package)
 
-	handlerTpl, err := template.ParseFiles(tplFileDir + "/handler.tpl")
+	handlerTpl, err := template.ParseFiles(tplFileDir + "/single_handler.tpl")
 	if err != nil {
 		log.Fatal(err)
 	}

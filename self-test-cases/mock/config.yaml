@@ -1,0 +1,32 @@
+log:
+    pretty: true
+    level: debug
+httpmockserver:
+    enable: true
+    address: 0.0.0.0:28024
+apimanager:
+    grpcaddress: 0.0.0.0:30000
+    httpaddress: 0.0.0.0:30001
+# pluginregistry: { }
+# plugin:
+#     simple: { }
+#     grpc: { }
+#     http: { }
+#     script: { }
+#     redis:
+#         enable: false
+#         addr: 127.0.0.1:6379
+#         password: ""
+#         db: 0
+#         prefix: /powermock/
+#     rediscluster:
+#         enable: false
+#         addresses:
+#             - xxx.xx.xx.xx:7028
+#             - xxx.xx.xx.xx:7027
+#             - xxx.xx.xx.xx:7029
+#             - xxx.xx.xx.xx:7029
+#             - xxx.xx.xx.xx:7026
+#             - xxx.xx.xx.xx:7028
+#         password: ""
+#         prefix: /powermock/

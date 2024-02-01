@@ -1,6 +1,4 @@
-//go:build ignore
-
-package main
+package mq_test
 
 import (
 	"context"
